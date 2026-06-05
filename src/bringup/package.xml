@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>bringup</name>
+  <version>1.0.0</version>
+  <description>SW cooperative driving launch files and shared configs</description>
+  <maintainer email="jhp@todo.todo">jhp</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>perception_cpp</exec_depend>
+  <exec_depend>perception_py</exec_depend>
+  <exec_depend>decision_cpp</exec_depend>
+  <exec_depend>decision_py</exec_depend>
+  <exec_depend>control_cpp</exec_depend>
+  <exec_depend>control_py</exec_depend>
+  <exec_depend>coin_d4_driver</exec_depend>
+  <exec_depend>turtlebot3_bringup</exec_depend>
+  <exec_depend>turtlebot3_node</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

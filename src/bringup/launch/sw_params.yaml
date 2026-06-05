@@ -1,0 +1,136 @@
+# =============================================================================
+# Performance Targets - TB3 Cooperative Driving System
+# Platform : Jetson Orin Nano / ROS 2 Humble
+# =============================================================================
+#
+# T1  Vision pipeline processing speed  : >= 15 FPS  (overall)
+# T2  Lane-center following accuracy    : avg lateral error <= 0.15 m
+# T3  Recognition accuracy              : >= 90 % (opponent vehicle + LED)
+# T4  Deadlock response time            : <= 1.0 s  (detect -> stop/yield cmd)
+#       Budget: detect(0.07 s) + confirm(0.3 s) + decide(0.1 s) + cmd(0.1 s)
+# T5  Reverse evasive path success rate : >= 80 %  (narrow-road environment)
+# T6  Cooperative driving success rate  : >= 80 %  (full scenario)
+#
+# This file is loaded by sw_launch.launch.py for every node.
+# Each section uses the ROS 2 parameter YAML convention:
+#   <node_name>:
+#     ros__parameters:
+#       <param>: <value>
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Sensor layer
+# ---------------------------------------------------------------------------
+camera_driver:
+  ros__parameters:
+    # Camera must deliver >= 15 FPS to feed the vision pipeline (T1).
+    # This existing SW entry point delegates capture to the verified usb_cam
+    # driver used on the robot.
+    video_device: /dev/video0
+    framerate: 30.0
+    image_width: 640
+    image_height: 480
+    pixel_format: yuyv2rgb
+    camera_name: fisheye
+
+led_signal:
+  ros__parameters:
+    # T1: process at 15 FPS.
+    process_fps: 15.0
+    # T3: wider temporal window (7 frames ~0.47 s) for >= 90 % LED accuracy.
+    temporal_window: 7
+    # V2V: verified OpenCV black-box + 5-LED classifier.
+    led_count: 5
+    dark_box_thresh: 70
+    min_box_area: 10000
+    min_box_aspect: 1.2
+    max_box_aspect: 6.8
+    min_box_fill_ratio: 0.42
+    led_thresh: 170
+    min_led_area: 5
+    max_led_area: 2500
+    max_led_y_diff: 25
+    slot_tol_pixels: 18
+    slot_tol_ratio: 0.38
+    led_panel_width_m: 0.12
+    focal_length_px: 1400.14208
+
+situation_fusion:
+  ros__parameters:
+    # Temporary manual value until real battery telemetry is selected.
+    battery_pct: 80.0
+    # Rear obstacle for yield-score calculation comes from the lidar rear sector.
+    rear_scan_topic: /scan
+    rear_obstacle_distance_m: 0.35
+    rear_obstacle_half_angle_deg: 45.0
+
+# ---------------------------------------------------------------------------
+# Decision layer
+# ---------------------------------------------------------------------------
+cooperation:
+  ros__parameters:
+    decision_hz: 10.0
+    deadlock_detection_hz: 20.0
+    max_negotiation_sec: 30.0
+    # Visual V2V negotiation:
+    #   y/RPS    => advertise 10101, wait 3 s, then send user-entered RPS mask.
+    #   n/score  => advertise 01010, then send 0-31 yield score as a 5-bit mask.
+    v2v_use_rps: true
+    prompt_protocol_choice: true
+    manual_rps_input: true
+    default_rps_choice: ROCK
+    v2v_advertise_sec: 0.8
+    rps_countdown_sec: 3.0
+
+drive_mode:
+  ros__parameters:
+    # T4: 20 Hz state machine means max transition latency is 0.05 s.
+    state_publish_hz: 20.0
+    # T4: confirm deadlock in 0.3 s instead of 1.0 s.
+    #     Full budget: 0.07 + 0.30 + 0.10 + 0.05 = 0.52 s  (<= 1.0 s target).
+    deadlock_confirm_sec: 0.30
+
+# ---------------------------------------------------------------------------
+# Control layer  (T2: lateral error <= 0.15 m)
+# ---------------------------------------------------------------------------
+lane_follow:
+  ros__parameters:
+    kp_m: 0.25
+
+led_behavior:
+  ros__parameters:
+    # Visual V2V LEDs are driven from driving mode and cooperation messages.
+    led_hz: 5.0
+    min_hold_sec: 0.5
+    v2v_pattern_timeout_sec: 1.0
+
+led_io:
+  ros__parameters:
+    # Jetson -> Arduino visual V2V LED controller.
+    # The Arduino sketch accepts single-character commands 0-9 at 9600 bps.
+    backend: arduino_serial
+    arduino_port: /dev/ttyACM1
+    # Keep the LED Arduino separate from OpenCR (/dev/ttyACM0) and lidar (/dev/tb3_lidar).
+    arduino_fallback_ports: [/dev/ttyACM1, /dev/ttyUSB1]
+    arduino_baudrate: 9600
+    arduino_timeout_sec: 0.1
+    arduino_boot_wait_sec: 2.0
+    arduino_command_newline: true
+    # Allows weighted-yield scores to be sent as raw commands like M10110.
+    arduino_raw_mask_enabled: true
+
+# ---------------------------------------------------------------------------
+# Behavior / path layer  (T5: reverse evasion success rate >= 80 %)
+# ---------------------------------------------------------------------------
+behavior_plan:
+  ros__parameters:
+    # T5: 0.020 m/s reverse speed (was 0.015) for crisper path execution
+    #     while staying within the robot base mechanical limits.
+    reverse_speed: 0.020
+
+path_track:
+  ros__parameters:
+    # T5: match reverse speed to behavior_planner for consistent tracking.
+    reverse_speed: 0.020
+    # T5: slightly tighter goal tolerance improves pull-over accuracy.
+    goal_tolerance_m: 0.04
