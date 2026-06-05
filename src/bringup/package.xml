@@ -3,7 +3,7 @@
 <package format="3">
   <name>bringup</name>
   <version>1.0.0</version>
-  <description>SW cooperative driving launch files and shared configs</description>
+  <description>FSD cooperative driving launch files and shared configs</description>
   <maintainer email="jhp@todo.todo">jhp</maintainer>
   <license>Apache-2.0</license>
 

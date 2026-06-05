@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Compatibility wrapper for the verified usb_cam camera driver.
 
-The SW stack keeps the camera_driver entry point in perception_py,
+The FSD stack keeps the camera_driver entry point in perception_py,
 but the actual camera capture is delegated to usb_cam_node_exe, matching the
 camera command that was validated on the robot.
 """

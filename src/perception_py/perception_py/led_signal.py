@@ -60,7 +60,7 @@ class LEDSignalPerceptionNode(Node):
         self.declare_parameter('use_fisheye_undistort', True)
         self.declare_parameter(
             'camera_info_yaml',
-            os.path.expanduser('~/SW_ws/src/perception_py/config/fisheye.yaml'),
+            os.path.expanduser('~/fsd_ws/src/perception_py/config/fisheye.yaml'),
         )
         self.declare_parameter('fisheye_calibration_path', '')
         self.declare_parameter('fisheye_balance', 0.0)
@@ -181,7 +181,7 @@ class LEDSignalPerceptionNode(Node):
 
         yaml_candidates = [
             yaml_configured,
-            os.path.expanduser('~/SW_ws/src/perception_py/config/fisheye.yaml'),
+            os.path.expanduser('~/fsd_ws/src/perception_py/config/fisheye.yaml'),
         ]
         for path in [p for p in yaml_candidates if p]:
             expanded = os.path.abspath(os.path.expanduser(path))
@@ -201,8 +201,8 @@ class LEDSignalPerceptionNode(Node):
         npz_candidates = [
             npz_configured,
             'fisheye_calibration.npz',
-            os.path.expanduser('~/SW_ws/fisheye_calibration.npz'),
-            os.path.expanduser('~/SW_ws/src/perception_py/config/fisheye_calibration.npz'),
+            os.path.expanduser('~/fsd_ws/fisheye_calibration.npz'),
+            os.path.expanduser('~/fsd_ws/src/perception_py/config/fisheye_calibration.npz'),
         ]
         for path in [p for p in npz_candidates if p]:
             expanded = os.path.abspath(os.path.expanduser(path))

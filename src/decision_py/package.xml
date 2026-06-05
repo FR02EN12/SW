@@ -3,7 +3,7 @@
 <package format="3">
   <name>decision_py</name>
   <version>1.0.0</version>
-  <description>Python decision nodes for SW cooperative driving</description>
+  <description>Python decision nodes for FSD cooperative driving</description>
   <maintainer email="jhp@todo.todo">jhp</maintainer>
   <license>Apache-2.0</license>
 

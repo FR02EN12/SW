@@ -11,7 +11,7 @@
 # T5  Reverse evasive path success rate : >= 80 %  (narrow-road environment)
 # T6  Cooperative driving success rate  : >= 80 %  (full scenario)
 #
-# This file is loaded by sw_launch.launch.py for every node.
+# This file is loaded by fsd.launch.py for every node.
 # Each section uses the ROS 2 parameter YAML convention:
 #   <node_name>:
 #     ros__parameters:
@@ -24,7 +24,7 @@
 camera_driver:
   ros__parameters:
     # Camera must deliver >= 15 FPS to feed the vision pipeline (T1).
-    # This existing SW entry point delegates capture to the verified usb_cam
+    # This existing FSD entry point delegates capture to the verified usb_cam
     # driver used on the robot.
     video_device: /dev/video0
     framerate: 30.0

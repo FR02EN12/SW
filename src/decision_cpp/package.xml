@@ -3,7 +3,7 @@
 <package format="3">
   <name>decision_cpp</name>
   <version>0.1.0</version>
-  <description>C++ decision nodes for SW cooperative driving</description>
+  <description>C++ decision nodes for FSD cooperative driving</description>
   <maintainer email="dev@todo.com">dev</maintainer>
   <license>Apache-2.0</license>
 

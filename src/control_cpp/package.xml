@@ -3,7 +3,7 @@
 <package format="3">
   <name>control_cpp</name>
   <version>0.1.0</version>
-  <description>C++ control nodes for SW path tracking and velocity muxing</description>
+  <description>C++ control nodes for FSD path tracking and velocity muxing</description>
   <maintainer email="dev@example.com">dev</maintainer>
   <license>Apache-2.0</license>
 

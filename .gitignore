@@ -1,7 +1,7 @@
+__pycache__/
+*.py[cod]
+
+# ROS/colcon generated output
 build/
 install/
 log/
-*.pyc
-__pycache__/
-.vscode/
-.DS_Store

@@ -14,7 +14,7 @@ setup(
     zip_safe=True,
     maintainer='jhp',
     maintainer_email='jhp@todo.todo',
-    description='Python decision nodes for SW cooperative driving',
+    description='Python decision nodes for FSD cooperative driving',
     license='Apache-2.0',
     entry_points={
         'console_scripts': [
